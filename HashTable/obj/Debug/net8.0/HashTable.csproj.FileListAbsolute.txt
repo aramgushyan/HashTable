@@ -9,3 +9,4 @@ C:\Users\Арам\source\repos\HashTable\HashTable\obj\Debug\net8.0\HashTable.dl
 C:\Users\Арам\source\repos\HashTable\HashTable\obj\Debug\net8.0\refint\HashTable.dll
 C:\Users\Арам\source\repos\HashTable\HashTable\obj\Debug\net8.0\HashTable.pdb
 C:\Users\Арам\source\repos\HashTable\HashTable\obj\Debug\net8.0\ref\HashTable.dll
+C:\Users\Арам\source\repos\HashTable\HashTable\obj\Debug\net8.0\HashTable.sourcelink.json

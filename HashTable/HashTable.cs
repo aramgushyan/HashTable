@@ -2,10 +2,14 @@
 using System.Collections;
 namespace HashTable
 {
-    public class NewHashTable   
+    public class NewHashTable:IEnumerable<KeysAndValues>,ICollection<KeysAndValues>
     {
         
-        List<KeysAndValues>[] storage = new List<KeysAndValues>[15]; 
+        List<KeysAndValues>[] storage = new List<KeysAndValues>[59];
+
+        public int Count { get; set; } = 0;
+
+        public bool IsReadOnly => throw new NotImplementedException();
 
         public void Add(object key, object value)
         {
@@ -24,7 +28,7 @@ namespace HashTable
             }            
         }
 
-        public void Remove(object key)
+        public bool Remove(object key)
         {
             int index = IndexStorage(key);
             if (ContainsKey(key))
@@ -32,13 +36,13 @@ namespace HashTable
                 for (int i = 0; i < storage[index].Count; i++)
                 {
                     if (storage[index][i].Key.Equals(key))
+                    {
                         storage[index].RemoveAt(i);
+                        return true;
+                    }
                 }
             }
-            else 
-            {
                 throw new Exception("Такого ключа нет");
-            }
         }
 
         public int IndexStorage(object key) 
@@ -125,13 +129,51 @@ namespace HashTable
             }
             return false;
         }
+
         private void CreateList(object key,out int hashcodeIndex) 
         {
             hashcodeIndex = IndexStorage(key);
             if (storage[hashcodeIndex] == null) 
             {
                 storage[hashcodeIndex] = new List<KeysAndValues>();
+                Count++;
             }
         }
+
+        public IEnumerator<KeysAndValues> GetEnumerator()
+        {
+            return new HashEnumerator(storage, Count);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        public void Add(KeysAndValues item)
+        {
+            Add(item.Key, item.Value);
+        }
+
+        public void Clear()
+        {
+            storage = new List<KeysAndValues>[15];
+        }
+
+        public bool Contains(KeysAndValues item)
+        {
+            return ContainsKey(item.Key);
+        }
+
+        public void CopyTo(KeysAndValues[] array, int arrayIndex)//?????????????
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Remove(KeysAndValues item)
+        {
+            return Remove(item.Key);
+        }
+
     }
 }
