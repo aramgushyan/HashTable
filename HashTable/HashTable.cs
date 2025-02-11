@@ -1,17 +1,18 @@
 ﻿
+using System;
 using System.Collections;
 namespace HashTable
 {
-    public class NewHashTable:IEnumerable<KeysAndValues>,ICollection<KeysAndValues>
+    public class NewHashTable <TKey,TValue>:IEnumerable<KeysAndValues>, ICollection<KeysAndValues>
     {
         
-        List<KeysAndValues>[] storage = new List<KeysAndValues>[59];
+       private LinkedList<KeysAndValues>[] _storage = new LinkedList<KeysAndValues>[15];
 
         public int Count { get; set; } = 0;
 
         public bool IsReadOnly => throw new NotImplementedException();
 
-        public void Add(object key, object value)
+        public void Add(TKey key, TValue value)
         {
             if (ContainsKey(key))
             {
@@ -20,7 +21,7 @@ namespace HashTable
             else 
             {
                 CreateList(key,out int hashcodeIndex);
-                storage[hashcodeIndex].Add(new KeysAndValues() 
+                _storage[hashcodeIndex].AddLast(new KeysAndValues() 
                 {
                     Key = key,
                     Value = value
@@ -28,16 +29,15 @@ namespace HashTable
             }            
         }
 
-        public bool Remove(object key)
+        public bool Remove(TKey key)
         {
             int index = IndexStorage(key);
             if (ContainsKey(key))
             {
-                for (int i = 0; i < storage[index].Count; i++)
-                {
-                    if (storage[index][i].Key.Equals(key))
+                foreach (var item in _storage[index]) { 
+                    if (item.Key.Equals(key))
                     {
-                        storage[index].RemoveAt(i);
+                        _storage[index].Remove(_storage[index].Find(item));
                         return true;
                     }
                 }
@@ -45,19 +45,20 @@ namespace HashTable
                 throw new Exception("Такого ключа нет");
         }
 
-        public int IndexStorage(object key) 
+        public int IndexStorage(TKey key) 
         {
-            return key.GetHashCode()%storage.Length;
+            return key.GetHashCode()%_storage.Length;
         }
 
-        public bool ContainsKey(object key) 
+        public bool ContainsKey(TKey key) 
         {
             int index = IndexStorage(key);
-            if (storage[index] != null)
+
+            if (_storage[index] != null)
             {
-                for (int j = 0; j < storage[index].Count; j++)
+                foreach (var item in _storage[index])
                 {
-                    if (storage[index][j].Key.Equals(key))
+                    if (item.Key.Equals(key))
                     {
                         return true;
                     }
@@ -68,28 +69,30 @@ namespace HashTable
 
         public bool ContainsValue(object value)
         {
-            for (int i = 0; i < storage.Length; i++)
+            for (int i = 0; i < _storage.Length; i++)
             {
-                if (storage[i]!=null){
-                    for (int j = 0; j < storage[i].Count; j++)
+                if (_storage[i]!=null)
+                {
+                    foreach (var item in _storage[i])
                     {
-                        if (storage[i][j].Value.Equals(value))
+                        if (item.Value.Equals(value))
                         {
                             return true;
                         }
-                    } }
+                    } 
+                }
             }
             return false;
         }
 
-        public object this[object key] 
+        public object this[TKey key] 
         {
             get 
             {
                 if (ContainsKey(key)) 
                 {
                     int index = IndexStorage(key);
-                    return FindValueWithKey(key,storage[index]);
+                    return FindValueWithKey(key,_storage[index]);
                 }
                 throw new Exception("Такого ключа нет");
             }
@@ -98,7 +101,7 @@ namespace HashTable
                 if (ContainsKey(key))
                 {
                     int index = IndexStorage(key);
-                    ChangeValue(key, value, storage[index]);
+                    ChangeValue(key, (TValue)value, _storage[index]);
                 }
                 else
                 {
@@ -107,42 +110,42 @@ namespace HashTable
             }
         }
 
-        private void ChangeValue(object key, object value,List<KeysAndValues> keysAndValues)
+        private void ChangeValue(TKey key, TValue value,LinkedList<KeysAndValues> keysAndValues)
         {
-            for (int i = 0; i < keysAndValues.Count; i++)
+            foreach (var item in keysAndValues)
             {
-                if (keysAndValues[i].Key.Equals(key))
+                if (item.Key.Equals(key))
                 {
-                    keysAndValues[i].Value = value;
+                    item.Value = value;
                 }
             }
         }
 
-        public object FindValueWithKey(object key,List<KeysAndValues> keysAndValues) 
+        private object FindValueWithKey(TKey key,LinkedList<KeysAndValues> keysAndValues) 
         {
-            for (int i = 0; i < keysAndValues.Count; i++) 
+            foreach (var item in keysAndValues)
             {
-                if (keysAndValues[i].Key.Equals(key)) 
+                if (item.Key.Equals(key)) 
                 {
-                    return keysAndValues[i].Value;
+                    return item.Value;
                 }
             }
             return false;
         }
 
-        private void CreateList(object key,out int hashcodeIndex) 
+        private void CreateList(TKey key,out int hashcodeIndex) 
         {
             hashcodeIndex = IndexStorage(key);
-            if (storage[hashcodeIndex] == null) 
+            if (_storage[hashcodeIndex] == null) 
             {
-                storage[hashcodeIndex] = new List<KeysAndValues>();
+                _storage[hashcodeIndex] = new LinkedList<KeysAndValues>();
                 Count++;
             }
         }
 
         public IEnumerator<KeysAndValues> GetEnumerator()
         {
-            return new HashEnumerator(storage, Count);
+            return new HashEnumerator(_storage);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -152,17 +155,17 @@ namespace HashTable
 
         public void Add(KeysAndValues item)
         {
-            Add(item.Key, item.Value);
+            Add((TKey)item.Key, (TValue)item.Value);
         }
 
         public void Clear()
         {
-            storage = new List<KeysAndValues>[15];
+            _storage = new LinkedList<KeysAndValues>[15];
         }
 
         public bool Contains(KeysAndValues item)
         {
-            return ContainsKey(item.Key);
+            return ContainsKey((TKey)item.Key);
         }
 
         public void CopyTo(KeysAndValues[] array, int arrayIndex)//?????????????
@@ -172,7 +175,7 @@ namespace HashTable
 
         public bool Remove(KeysAndValues item)
         {
-            return Remove(item.Key);
+            return Remove((TKey)item.Key);
         }
 
     }
