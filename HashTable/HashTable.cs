@@ -3,14 +3,34 @@ using System;
 using System.Collections;
 namespace HashTable
 {
-    public class NewHashTable <TKey,TValue>:IEnumerable<KeysAndValues>, ICollection<KeysAndValues>
+    public class NewHashTable <TKey,TValue>:IEnumerable<KeysAndValues <TKey,TValue>>, ICollection<KeysAndValues <TKey,TValue>>,ICloneable
     {
-        
-       private LinkedList<KeysAndValues>[] _storage = new LinkedList<KeysAndValues>[15];
 
+        private LinkedList<KeysAndValues<TKey, TValue>>[] _storage;
+
+
+        private int _capacity;
         public int Count { get; set; } = 0;
 
-        public bool IsReadOnly => throw new NotImplementedException();
+        public bool IsReadOnly => false;
+
+
+        public NewHashTable()
+        {
+            _capacity = 15;
+            _storage = new LinkedList<KeysAndValues<TKey, TValue>>[_capacity];
+        }
+
+        public NewHashTable(int capacity)
+        {
+            _storage = new LinkedList<KeysAndValues<TKey, TValue>>[capacity];
+            _capacity = capacity;
+        }
+
+        public NewHashTable(NewHashTable<TKey,TValue> hashTable) 
+        {
+
+        }
 
         public void Add(TKey key, TValue value)
         {
@@ -21,11 +41,12 @@ namespace HashTable
             else 
             {
                 CreateList(key,out int hashcodeIndex);
-                _storage[hashcodeIndex].AddLast(new KeysAndValues() 
+                _storage[hashcodeIndex].AddLast(new KeysAndValues<TKey, TValue>()
                 {
                     Key = key,
                     Value = value
                 });
+                ++Count;
             }            
         }
 
@@ -38,6 +59,7 @@ namespace HashTable
                     if (item.Key.Equals(key))
                     {
                         _storage[index].Remove(_storage[index].Find(item));
+                        --Count;
                         return true;
                     }
                 }
@@ -110,7 +132,7 @@ namespace HashTable
             }
         }
 
-        private void ChangeValue(TKey key, TValue value,LinkedList<KeysAndValues> keysAndValues)
+        private void ChangeValue(TKey key, TValue value,LinkedList<KeysAndValues<TKey, TValue>> keysAndValues)
         {
             foreach (var item in keysAndValues)
             {
@@ -121,7 +143,7 @@ namespace HashTable
             }
         }
 
-        private object FindValueWithKey(TKey key,LinkedList<KeysAndValues> keysAndValues) 
+        private object FindValueWithKey(TKey key,LinkedList<KeysAndValues<TKey, TValue>> keysAndValues) 
         {
             foreach (var item in keysAndValues)
             {
@@ -138,14 +160,14 @@ namespace HashTable
             hashcodeIndex = IndexStorage(key);
             if (_storage[hashcodeIndex] == null) 
             {
-                _storage[hashcodeIndex] = new LinkedList<KeysAndValues>();
+                _storage[hashcodeIndex] = new LinkedList<KeysAndValues<TKey, TValue>>();
                 Count++;
             }
         }
 
-        public IEnumerator<KeysAndValues> GetEnumerator()
+        public IEnumerator<KeysAndValues<TKey, TValue>> GetEnumerator()
         {
-            return new HashEnumerator(_storage);
+            return new HashEnumerator<TKey, TValue>(_storage);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -153,29 +175,48 @@ namespace HashTable
             return GetEnumerator();
         }
 
-        public void Add(KeysAndValues item)
+        public void Add(KeysAndValues<TKey, TValue> item)
         {
-            Add((TKey)item.Key, (TValue)item.Value);
+            Add(item.Key,item.Value);
         }
 
         public void Clear()
         {
-            _storage = new LinkedList<KeysAndValues>[15];
+            _storage = new LinkedList<KeysAndValues<TKey, TValue>>[15];
         }
 
-        public bool Contains(KeysAndValues item)
+        public bool Contains(KeysAndValues<TKey, TValue> item)
         {
-            return ContainsKey((TKey)item.Key);
+            return ContainsKey(item.Key);
         }
 
-        public void CopyTo(KeysAndValues[] array, int arrayIndex)//?????????????
+        public void CopyTo(KeysAndValues<TKey, TValue>[] array, int arrayIndex)//?????????????
         {
-            throw new NotImplementedException();
+            array = new KeysAndValues<TKey, TValue>[_capacity];
+            foreach (var item in this) 
+            {
+                array[arrayIndex++] = item;
+            }
         }
 
-        public bool Remove(KeysAndValues item)
+        public bool Remove(KeysAndValues<TKey, TValue> item)
         {
-            return Remove((TKey)item.Key);
+            return Remove(item.Key);
+        }
+
+        public object Clone()
+        {
+            NewHashTable<TKey,TValue> clone = new NewHashTable<TKey,TValue>(_capacity);
+            foreach (var item in this) 
+            {
+                clone.Add(item);
+            }
+            return clone;
+        }
+
+        public object ShallowCopy() 
+        {
+            return this;
         }
 
     }

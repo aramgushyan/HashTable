@@ -7,19 +7,19 @@ using System.Threading.Tasks;
 
 namespace HashTable
 {
-    public class HashEnumerator : IEnumerator<KeysAndValues>
+    public class HashEnumerator <TKey,TValue> : IEnumerator<KeysAndValues<TKey, TValue>>
     {
         private int position = 0;
         //private int positionList = 0;
-        LinkedListNode<KeysAndValues> node;
-        private LinkedList<KeysAndValues>[] _storage;
+        LinkedListNode<KeysAndValues<TKey, TValue>> node;
+        private LinkedList<KeysAndValues<TKey, TValue>>[] _storage;
         private int _index=0;
-        public HashEnumerator(LinkedList<KeysAndValues>[] storage) 
+        public HashEnumerator(LinkedList<KeysAndValues<TKey, TValue>>[] storage) 
         {
             _storage = storage;
         }
 
-        public KeysAndValues Current => node.Value;
+        public KeysAndValues<TKey, TValue> Current => node.Value;
 
         object IEnumerator.Current => Current;
 
@@ -29,14 +29,14 @@ namespace HashTable
 
         public bool MoveNext()
         {
-            if  (_storage[position]!=null && _index == _storage[position].Count )
+            if  (_storage[position]!=null && _index == _storage[position].Count)
             {
                 ++position;
                 _index = 0;
                 node = null;
             }
 
-            while (position <= _storage.Length - 1 && _storage[position] == null)
+            while (position <= _storage.Length - 1 && ( _storage[position] == null || _storage[position].Count==0))
             {
                 ++position;
 
@@ -58,12 +58,13 @@ namespace HashTable
                 return true;
             }
 
-            return true;
+            return false;
         }
         public void Reset()
         {
-            position = -1;
+            position = 0;
             node = null;
+            _index = 0;
         }
     }
 }

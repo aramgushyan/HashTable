@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace HashTable
 {
-    public class KeysAndValues
+    public class KeysAndValues <TKey,TValue>
     {
-        public object Key { get; set; }
-        public object Value { get; set; }
-
+        public TKey Key { get; set; }
+        public TValue Value { get; set; }
 
     }
 }
