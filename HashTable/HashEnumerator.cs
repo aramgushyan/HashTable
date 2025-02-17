@@ -10,7 +10,6 @@ namespace HashTable
     public class HashEnumerator <TKey,TValue> : IEnumerator<KeysAndValues<TKey, TValue>>
     {
         private int position = 0;
-        //private int positionList = 0;
         LinkedListNode<KeysAndValues<TKey, TValue>> node;
         private LinkedList<KeysAndValues<TKey, TValue>>[] _storage;
         private int _index=0;

@@ -17,3 +17,5 @@ C:\Users\Арам\source\repos\HashTable\Project\obj\Debug\net8.0\Project.pdb
 C:\Users\Арам\source\repos\HashTable\Project\obj\Debug\net8.0\Project.genruntimeconfig.cache
 C:\Users\Арам\source\repos\HashTable\Project\obj\Debug\net8.0\ref\Project.dll
 C:\Users\Арам\source\repos\HashTable\Project\obj\Debug\net8.0\Project.sourcelink.json
+C:\Users\Арам\source\repos\HashTable\Project\bin\Debug\net8.0\LibClass.dll
+C:\Users\Арам\source\repos\HashTable\Project\bin\Debug\net8.0\LibClass.pdb

@@ -11,6 +11,16 @@
         "runtime": {
           "bin/placeholder/HashTable.dll": {}
         }
+      },
+      "LibClass/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "compile": {
+          "bin/placeholder/LibClass.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/LibClass.dll": {}
+        }
       }
     }
   },
@@ -19,11 +29,17 @@
       "type": "project",
       "path": "../HashTable/HashTable.csproj",
       "msbuildProject": "../HashTable/HashTable.csproj"
+    },
+    "LibClass/1.0.0": {
+      "type": "project",
+      "path": "../LibClass/LibClass.csproj",
+      "msbuildProject": "../LibClass/LibClass.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net8.0": [
-      "HashTable >= 1.0.0"
+      "HashTable >= 1.0.0",
+      "LibClass >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -60,6 +76,9 @@
           "projectReferences": {
             "C:\\Users\\Арам\\source\\repos\\HashTable\\HashTable\\HashTable.csproj": {
               "projectPath": "C:\\Users\\Арам\\source\\repos\\HashTable\\HashTable\\HashTable.csproj"
+            },
+            "C:\\Users\\Арам\\source\\repos\\HashTable\\LibClass\\LibClass.csproj": {
+              "projectPath": "C:\\Users\\Арам\\source\\repos\\HashTable\\LibClass\\LibClass.csproj"
             }
           }
         }

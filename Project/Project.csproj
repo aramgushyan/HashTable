@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HashTable\HashTable.csproj" />
+    <ProjectReference Include="..\LibClass\LibClass.csproj" />
   </ItemGroup>
 
 </Project>

@@ -104,7 +104,7 @@ namespace LibClass
         }
         public override string ToString()
         {
-            return Name+" " + Population;
+            return $"Имя:{Name}," + $" Население:{Population},";
         }
     }
 }

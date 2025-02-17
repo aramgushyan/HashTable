@@ -20,3 +20,4 @@ C:\Users\Арам\source\repos\HashTable\LibClass\obj\Debug\net8.0\LibClass.dll
 C:\Users\Арам\source\repos\HashTable\LibClass\obj\Debug\net8.0\refint\LibClass.dll
 C:\Users\Арам\source\repos\HashTable\LibClass\obj\Debug\net8.0\LibClass.pdb
 C:\Users\Арам\source\repos\HashTable\LibClass\obj\Debug\net8.0\ref\LibClass.dll
+C:\Users\Арам\source\repos\HashTable\LibClass\obj\Debug\net8.0\LibClass.sourcelink.json
