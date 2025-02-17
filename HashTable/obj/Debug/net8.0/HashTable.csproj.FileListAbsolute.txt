@@ -1,0 +1,12 @@
+C:\Users\Арам\source\repos\HashTable\HashTable\obj\Debug\net8.0\HashTable.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Арам\source\repos\HashTable\HashTable\obj\Debug\net8.0\HashTable.AssemblyInfoInputs.cache
+C:\Users\Арам\source\repos\HashTable\HashTable\obj\Debug\net8.0\HashTable.AssemblyInfo.cs
+C:\Users\Арам\source\repos\HashTable\HashTable\obj\Debug\net8.0\HashTable.csproj.CoreCompileInputs.cache
+C:\Users\Арам\source\repos\HashTable\HashTable\bin\Debug\net8.0\HashTable.deps.json
+C:\Users\Арам\source\repos\HashTable\HashTable\bin\Debug\net8.0\HashTable.dll
+C:\Users\Арам\source\repos\HashTable\HashTable\bin\Debug\net8.0\HashTable.pdb
+C:\Users\Арам\source\repos\HashTable\HashTable\obj\Debug\net8.0\HashTable.dll
+C:\Users\Арам\source\repos\HashTable\HashTable\obj\Debug\net8.0\refint\HashTable.dll
+C:\Users\Арам\source\repos\HashTable\HashTable\obj\Debug\net8.0\HashTable.pdb
+C:\Users\Арам\source\repos\HashTable\HashTable\obj\Debug\net8.0\ref\HashTable.dll
+C:\Users\Арам\source\repos\HashTable\HashTable\obj\Debug\net8.0\HashTable.sourcelink.json
