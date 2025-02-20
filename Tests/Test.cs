@@ -15,14 +15,14 @@ namespace Tests
             hashTable.Add(5, 6);
             Assert.AreEqual(true, hashTable.ContainsKey(5));
             Assert.AreEqual(true, hashTable.ContainsValue(6));
-            Assert.AreEqual(true, hashTable.Contains(new KeysAndValues<int, int> { Key = 5, Value = 6 }));
+            Assert.AreEqual(true, hashTable.Contains(new KeyValuePair<int, int>(5,6)));
         }
         [TestMethod]
         public void TestFalseContains()
         {
             Assert.AreEqual(false, hashTable.ContainsKey(6));
             Assert.AreEqual(false, hashTable.ContainsValue(5));
-            Assert.AreEqual(false, hashTable.Contains(new KeysAndValues<int, int> { Key = 6, Value = 5 }));
+            Assert.AreEqual(false, hashTable.Contains(new KeyValuePair<int, int>(6, 5)));
         }
 
         [TestMethod]
@@ -32,7 +32,7 @@ namespace Tests
             hashTable.Remove(5);
             Assert.AreEqual(false, hashTable.ContainsKey(5));
             Assert.AreEqual(false, hashTable.ContainsValue(6));
-            Assert.AreEqual(false, hashTable.Contains(new KeysAndValues<int, int> { Key = 5, Value = 6 }));
+            Assert.AreEqual(false, hashTable.Contains(new KeyValuePair<int, int>(5, 6)));
         }
 
         [TestMethod]
@@ -45,17 +45,6 @@ namespace Tests
         {
             hashTable.Add(5, 8);
             hashTable.Add(5, 7);
-        }
-        [TestMethod]
-        public void TestExceptionRemove()
-        {
-            Assert.ThrowsException<Exception>(TestFalseRemove);
-        }
-        void TestFalseRemove()
-        {
-            hashTable.Add(5, 8);
-            hashTable.Remove(5);
-            hashTable.Remove(5);
         }
 
         [TestMethod]
@@ -96,24 +85,24 @@ namespace Tests
         [TestMethod]
         public void TestAnotherAdd()
         {
-            hashTable.Add(new KeysAndValues<int, int> { Key = 5, Value = 6 });
+            hashTable.Add(new KeyValuePair<int, int>(5, 6));
             Assert.AreEqual(true, hashTable.ContainsKey(5));
             Assert.AreEqual(true, hashTable.ContainsValue(6));
-            Assert.AreEqual(true, hashTable.Contains(new KeysAndValues<int, int> { Key = 5, Value = 6 }));
+            Assert.AreEqual(true, hashTable.Contains(new KeyValuePair<int, int>(5, 6)));
         }
 
         [TestMethod]
         public void TestAnotherRemove()
         {
-            hashTable.Add(new KeysAndValues<int, int> { Key = 5, Value = 6 });
-            hashTable.Remove(new KeysAndValues<int, int> { Key = 5, Value = 6 });
+            hashTable.Add(new KeyValuePair<int, int>(5, 6));
+            hashTable.Remove(new KeyValuePair<int, int>(5, 6));
             Assert.AreEqual(false, hashTable.ContainsKey(5));
         }
 
         [TestMethod]
         public void TestClear()
         {
-            hashTable.Add(new KeysAndValues<int, int> { Key = 5, Value = 6 });
+            hashTable.Add(new KeyValuePair<int, int>(5, 6));
             hashTable.Clear();
             Assert.AreEqual(false, hashTable.ContainsKey(5));
         }
@@ -121,21 +110,21 @@ namespace Tests
         [TestMethod]
         public void TestCapacity()
         {
-            hashTable.Add(new KeysAndValues<int, int> { Key = 5, Value = 6 });
+            hashTable.Add(new KeyValuePair<int, int>(5, 6));
             Assert.AreEqual(5, hashTable.Capacity);
         }
 
         [TestMethod]
         public void TestCount()
         {
-            hashTable.Add(new KeysAndValues<int, int> { Key = 5, Value = 6 });
+            hashTable.Add(new KeyValuePair<int, int>(5, 6));
             Assert.AreEqual(1, hashTable.Count);
         }
 
         [TestMethod]
         public void TestClone()
         {
-            hashTable.Add(new KeysAndValues<int, int> { Key = 5, Value = 6 });
+            hashTable.Add(new KeyValuePair<int, int>(5, 6));
             NewHashTable<int, int> anotherHashTable = (NewHashTable<int, int>)hashTable.Clone();
             Assert.AreEqual(hashTable, anotherHashTable);
         }
@@ -150,7 +139,7 @@ namespace Tests
         [TestMethod]
         public void TestSecondConstruct()
         {
-            hashTable.Add(new KeysAndValues<int, int> { Key = 5, Value = 6 });
+            hashTable.Add(new KeyValuePair<int, int>(5, 6));
             NewHashTable<int, int> anotherHashTable = new NewHashTable<int, int>(hashTable);
             Assert.AreEqual(hashTable, anotherHashTable);
         }
@@ -158,7 +147,7 @@ namespace Tests
         [TestMethod]
         public void TestCopyTo()
         {
-            hashTable.Add(new KeysAndValues<int, int> { Key = 5, Value = 6 });
+            hashTable.Add(new KeyValuePair<int, int>(5, 6));
             KeysAndValues<int, int>[] array = new KeysAndValues<int, int>[hashTable.Count];
             hashTable.CopyTo(array, 0);
             Assert.AreEqual(hashTable.Count, array.Length);
@@ -173,7 +162,7 @@ namespace Tests
         }
         void TestCopy()
         {
-            hashTable.Add(new KeysAndValues<int, int> { Key = 5, Value = 6 });
+            hashTable.Add(new KeyValuePair<int, int>(5, 6));
             KeysAndValues<int, int>[] array = new KeysAndValues<int, int>[hashTable.Count];
             hashTable.CopyTo(array, -1);
         }
@@ -181,7 +170,7 @@ namespace Tests
         [TestMethod]
         public void TestShallowCopy()
         {
-            hashTable.Add(new KeysAndValues<int, int> { Key = 5, Value = 6 });
+            hashTable.Add(new KeyValuePair<int, int>(5, 6));
             NewHashTable<int, int> anotherHashTable = (NewHashTable<int, int>)hashTable.ShallowCopy();
             Assert.AreEqual(hashTable, anotherHashTable);
         }
@@ -189,11 +178,11 @@ namespace Tests
         [TestMethod]
         public void TestRange()
         {
-            hashTable.Add(new KeysAndValues<int, int> { Key = 5, Value = 6 });
+            hashTable.Add(new KeyValuePair<int, int>(5, 6));
             NewHashTable<int, int> anotherHashTable = new NewHashTable<int, int>(1);
             anotherHashTable.Add(7, 7);
-            Assert.AreEqual(2,anotherHashTable.Capacity);
-            
+            Assert.AreEqual(2, anotherHashTable.Capacity);
+
         }
     }
 }

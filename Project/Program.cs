@@ -55,6 +55,21 @@ namespace HashTableDemo
             }
             Console.WriteLine();
 
+            Console.WriteLine("Используем свойства Keys и Values");
+            Console.WriteLine("Keys:");
+            foreach (var item in hashTable.Keys) 
+            {
+                Console.WriteLine(item);
+            }
+            Console.WriteLine();
+
+            Console.WriteLine("Values:");
+            foreach (var item in hashTable.Values)
+            {
+                Console.WriteLine(item);
+            }
+            Console.WriteLine();
+
             Console.WriteLine("Удаляем  по ключу firstPlace");
             hashTable.Remove(firstPlace);
 
@@ -73,11 +88,7 @@ namespace HashTableDemo
             Console.WriteLine();
 
             Console.WriteLine($"Добавим новый элемент через метод интерфейса ICollection");
-            hashTable.Add(new KeysAndValues<Place, Region>
-            {
-                Key = thirdPlace,
-                Value = thirdRegion
-            });
+            hashTable.Add(new KeyValuePair<Place, Region>(thirdPlace, thirdRegion));
             Console.WriteLine("");
 
             Console.WriteLine("Индексатор:");
@@ -93,18 +104,11 @@ namespace HashTableDemo
             Console.WriteLine();
 
             Console.WriteLine($"Удалим новый элемент через метод интерфейса ICollection");
-            hashTable.Remove(new KeysAndValues<Place, Region>()
-            {
-                Key = thirdPlace,
-                Value = secondRegion
-            });
+            hashTable.Remove(new KeyValuePair<Place, Region>(thirdPlace, secondRegion));
             Console.WriteLine();
 
-            KeysAndValues<Place, Region> forCheck = new KeysAndValues<Place, Region>()
-            {
-                Key = thirdPlace,
-                Value = secondRegion
-            };
+            KeyValuePair<Place, Region> forCheck = new KeyValuePair<Place, Region>(thirdPlace, secondRegion);
+
             Console.Write("Проверим  есть ли элемент  через метод интерфейса ICollection?: ");
             Console.Write($"{hashTable.Contains(forCheck)}");
             Console.WriteLine();
@@ -118,7 +122,7 @@ namespace HashTableDemo
             Console.WriteLine("Убедимся в том что клон изменился, а оригинал нет");
             Console.WriteLine();
 
-            Console.WriteLine("Оригинал:") ;
+            Console.WriteLine("Оригинал:");
             foreach (var item in hashTable)
             {
                 Console.WriteLine($"ключ={item.Key}" + " " + $"значение={item.Value}");
@@ -168,11 +172,11 @@ namespace HashTableDemo
 
             Console.WriteLine("Copy To");
             KeysAndValues<Place, Region>[] array = new KeysAndValues<Place, Region>[copyClone.Count];
-            copyClone.CopyTo( array, 0 );
+            copyClone.CopyTo(array, 0);
             Console.WriteLine();
 
             Console.WriteLine("Массив");
-            foreach (var item in array) 
+            foreach (var item in array)
             {
                 Console.WriteLine($"ключ={item.Key}" + " " + $"значение={item.Value}");
             }

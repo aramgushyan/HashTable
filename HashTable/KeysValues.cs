@@ -10,6 +10,16 @@ namespace HashTable
     {
         public TKey Key { get; set; }
         public TValue Value { get; set; }
+        public KeysAndValues<TKey, TValue>? Next { get; set; } = null;
+
+        public KeysAndValues()
+        {
+        }
+        public KeysAndValues(TKey key,TValue value)
+        {
+            Key = key;
+            Value = value;
+        }
 
         public override bool Equals(object? obj)
         {

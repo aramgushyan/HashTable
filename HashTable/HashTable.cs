@@ -1,15 +1,17 @@
 ﻿
+using System;
 using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 namespace HashTable
 {
-    public class NewHashTable<TKey, TValue> : IEnumerable<KeysAndValues<TKey, TValue>>, ICollection<KeysAndValues<TKey, TValue>>, ICloneable
+    public class NewHashTable<TKey, TValue>:IDictionary<TKey, TValue>, ICloneable
     {
 
-        private LinkedList<KeysAndValues<TKey, TValue>>[] _storage;
+        private KeysAndValues<TKey, TValue>[] _storage;
         private int _capacity;
 
 
-        public LinkedList<KeysAndValues<TKey, TValue>>[] Storage
+        public KeysAndValues<TKey, TValue>[] Storage
         {
             get
             {
@@ -17,7 +19,7 @@ namespace HashTable
             }
         }
 
-        public int Capacity 
+        public int Capacity
         {
             get
             {
@@ -25,84 +27,144 @@ namespace HashTable
             }
             set
             {
-                if (value < 0) 
+                if (value < 0)
                     throw new ArgumentOutOfRangeException("Не может быть меньше 0");
                 _capacity = value;
             }
         }
-
-        public int Count { get; set; } = 0;
+        public int Count 
+        {
+            get 
+            {
+                int _count = 0;
+                foreach (var item in this)
+                {
+                    ++_count;
+                }
+                return _count;
+            }
+        }
 
         public bool IsReadOnly => false;
+
+        public ICollection<TKey> Keys
+        {
+            get
+            {
+                List<TKey> keys = new List<TKey>();
+                foreach (var item in this) 
+                {
+                    keys.Add(item.Key);
+                }
+                return keys;
+            }
+        }
+
+        public ICollection<TValue> Values
+        {
+            get
+            {
+                List<TValue> values = new List<TValue>();
+                foreach (var item in this)
+                {
+                    values.Add(item.Value);
+                }
+                return values;
+            }
+        }
 
 
         public NewHashTable()
         {
             Capacity = 15;
-            _storage = new LinkedList<KeysAndValues<TKey, TValue>>[Capacity];
+            _storage = new KeysAndValues<TKey, TValue>[Capacity];
         }
 
         public NewHashTable(int capacity)
         {
             Capacity = capacity;
-            _storage = new LinkedList<KeysAndValues<TKey, TValue>>[Capacity];
-            
+            _storage = new KeysAndValues<TKey, TValue>[Capacity];
+
         }
 
         public NewHashTable(NewHashTable<TKey, TValue> hashTable)
         {
             _storage = ((NewHashTable<TKey, TValue>)hashTable.Clone()).Storage;
             Capacity = hashTable.Capacity;
-            Count = hashTable.Count;
         }
 
         public void Add(TKey key, TValue value)
         {
             if (IsReadOnly == false)
             {
-                if (ContainsKey(key))
+
+                if (!ContainsKey(key))
                 {
-                    throw new Exception("Такой ключ уже есть");
-                }
-                else
-                {
-                    CreateList(key, out int hashcodeIndex);
-                    _storage[hashcodeIndex].AddLast(new KeysAndValues<TKey, TValue>()
+                    int hashcodeIndex = IndexStorage(key);
+
+                    if (_storage[hashcodeIndex] == null)
                     {
-                        Key = key,
-                        Value = value
-                    });
-                    ++Count;
-                    if (_storage[hashcodeIndex].Count >= _capacity)
+                        _storage[hashcodeIndex] = new KeysAndValues<TKey, TValue>(key, value);
+                    }
+                    else
+                    {
+                        var current = _storage[hashcodeIndex];
+
+                        while (current.Next != null)
+                        {
+                            current = current.Next;
+                        }
+
+                        current.Next = new KeysAndValues<TKey, TValue>(key, value);
+                    }
+                    if (LenghtNodes(hashcodeIndex) >= _capacity)
                     {
                         UpdateRange();
                     }
                 }
+                else
+                {
+                    throw new Exception("Такой ключ есть");
+                }
             }
-            else 
+            else
             {
                 throw new Exception("Коллекция только для чтения");
             }
         }
-
+        private int LenghtNodes(int index) 
+        {
+            var current = _storage[index];
+            int count = 0;
+            while (current != null) 
+            {
+                ++count;
+                current = current.Next;
+            }  
+            return count;
+        }
         public bool Remove(TKey key)
         {
             if (IsReadOnly == false)
             {
                 int index = IndexStorage(key);
-                if (ContainsKey(key))
+                var current = _storage[index];
+                KeysAndValues<TKey, TValue> past = null;
+
+                while (current != null) 
                 {
-                    foreach (var item in _storage[index])
+                    if (current.Key.Equals(key)) 
                     {
-                        if (item.Key.Equals(key))
-                        {
-                            _storage[index].Remove(_storage[index].Find(item));
-                            --Count;
-                            return true;
-                        }
+                        if (past == null)
+                            _storage[index] = current.Next;
+                        else
+                            past.Next = current.Next;
+                        return true;
                     }
+                    past=current;
+                    current=current.Next;
                 }
-                throw new Exception("Такого ключа нет");
+                return false;
             }
             throw new Exception("Коллекция только для чтения");
         }
@@ -118,12 +180,14 @@ namespace HashTable
 
             if (_storage[index] != null)
             {
-                foreach (var item in _storage[index])
+                var current = _storage[index];
+                while (current !=null) 
                 {
-                    if (item.Key.Equals(key))
+                    if (current.Key.Equals(key)) 
                     {
                         return true;
                     }
+                    current = current.Next; 
                 }
             }
             return false;
@@ -131,9 +195,9 @@ namespace HashTable
 
         public bool ContainsValue(object value)
         {
-            foreach (var item in this) 
+            foreach (var _item in this)
             {
-                if(item.Value.Equals(value))
+                if (_item.Value.Equals(value))
                     return true;
             }
             return false;
@@ -145,8 +209,7 @@ namespace HashTable
             {
                 if (ContainsKey(key))
                 {
-                    int index = IndexStorage(key);
-                    return FindValueWithKey(key, _storage[index]);
+                    return FindValueWithKey(key);
                 }
                 throw new Exception("Такого ключа нет");
             }
@@ -156,8 +219,7 @@ namespace HashTable
                 {
                     if (ContainsKey(key))
                     {
-                        int index = IndexStorage(key);
-                        ChangeValue(key, (TValue)value, _storage[index]);
+                        ChangeValue(key,value);
                     }
                     else
                     {
@@ -171,42 +233,32 @@ namespace HashTable
             }
         }
 
-        private void ChangeValue(TKey key, TValue value, LinkedList<KeysAndValues<TKey, TValue>> keysAndValues)
+        private void ChangeValue(TKey key, TValue value)
         {
-                foreach (var item in keysAndValues)
+            var current = _storage[IndexStorage(key)];
+            while (current != null)
+            {
+                if (current.Key.Equals(key))
                 {
-                    if (item.Key.Equals(key))
-                    {
-                        item.Value = value;
-                    }
+                    current.Value = value;
                 }
+                current = current.Next;
+            }
         }
 
-        private TValue FindValueWithKey(TKey key, LinkedList<KeysAndValues<TKey, TValue>> keysAndValues)
+        private TValue FindValueWithKey(TKey key)
         {
-            foreach (var item in keysAndValues)
+
+            var current = _storage[IndexStorage(key)];
+            while (current != null) 
             {
-                if (item.Key.Equals(key))
+                if (current.Key.Equals(key))
                 {
-                    return item.Value;
+                    return current.Value;
                 }
+                current = current.Next;
             }
             throw new Exception("Такого ключа нет");
-        }
-
-        private void CreateList(TKey key, out int hashcodeIndex)
-        {
-            hashcodeIndex = IndexStorage(key);
-
-            if (_storage[hashcodeIndex] == null)
-            {
-                _storage[hashcodeIndex] = new LinkedList<KeysAndValues<TKey, TValue>>();
-            }
-        }
-
-        public IEnumerator<KeysAndValues<TKey, TValue>> GetEnumerator()
-        {
-            return new HashEnumerator<TKey, TValue>(_storage);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -214,19 +266,39 @@ namespace HashTable
             return GetEnumerator();
         }
 
-        public void Add(KeysAndValues<TKey, TValue> item)
+        public bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Add(KeyValuePair<TKey, TValue> item)
         {
             Add(item.Key, item.Value);
         }
 
         public void Clear()
         {
-            _storage = new LinkedList<KeysAndValues<TKey, TValue>>[_capacity];
+            _storage = new KeysAndValues<TKey, TValue>[_capacity];
         }
 
-        public bool Contains(KeysAndValues<TKey, TValue> item)
+        public bool Contains(KeyValuePair<TKey, TValue> item)
         {
             return ContainsKey(item.Key);
+        }
+
+        public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Remove(KeyValuePair<TKey, TValue> item)
+        {
+            return Remove(item.Key);
+        }
+
+       public  IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
+        {
+            return new HashEnumerator<TKey, TValue>(_storage);
         }
 
         public void CopyTo(KeysAndValues<TKey, TValue>[] array, int arrayIndex)//?????????????
@@ -234,49 +306,49 @@ namespace HashTable
             if (arrayIndex < 0 || arrayIndex + Count > array.Length)
                 throw new Exception("Недостаточно места в массиве");
 
-            foreach (var item in this) 
+            foreach (var _item in this)
             {
-                array[arrayIndex] = item;
+                array[arrayIndex] = new KeysAndValues<TKey, TValue>(_item.Key, _item.Value);
                 ++arrayIndex;
             }
-        }
-
-        public bool Remove(KeysAndValues<TKey, TValue> item)
-        {
-            return Remove(item.Key);
         }
 
         public object Clone()
         {
             NewHashTable<TKey, TValue> clone = new NewHashTable<TKey, TValue>(_capacity);
-            foreach (var item in this)
+            foreach (var _item in this)
             {
-                clone.Add(item.Key, item.Value);
+                clone.Add(_item.Key, _item.Value);
             }
             clone.Capacity = _capacity;
-            clone.Count = Count;
             return clone;
         }
 
         public object ShallowCopy()
         {
-            {
-                return this.MemberwiseClone();
-            }
+             return this.MemberwiseClone();
         }
 
-        private void UpdateRange() 
+        private void UpdateRange()
         {
             _capacity *= 2;
-            var newStorage = new LinkedList<KeysAndValues<TKey, TValue>>[_capacity];
-            foreach (var item in this) 
+            var newStorage = new KeysAndValues<TKey, TValue>[_capacity];
+            foreach (var _item in this)
             {
-                int index = IndexStorage(item.Key);
-                if (newStorage[index] == null) 
+                int index = IndexStorage(_item.Key);
+                if (newStorage[index] == null)
                 {
-                    newStorage[index] = new LinkedList<KeysAndValues<TKey, TValue>>();
+                    newStorage[index] = new KeysAndValues<TKey, TValue>(_item.Key, _item.Value);
                 }
-                newStorage[index].AddLast(item);
+                else
+                {
+                    var current = newStorage[index];
+                    while (current != null) 
+                    {
+                        current=current.Next;
+                    }
+                    current.Next = new KeysAndValues<TKey, TValue>(_item.Key, _item.Value);
+                }   
             }
             _storage = newStorage;
         }
@@ -285,23 +357,23 @@ namespace HashTable
         {
             if (obj is NewHashTable<TKey, TValue> anotherTable)
             {
-                if(anotherTable.Count!=Count)
+                if (anotherTable.Count != Count)
                     return false;
 
-                List<KeysAndValues<TKey, TValue>> listOfThisItems = new List<KeysAndValues<TKey, TValue>>();
-                List<KeysAndValues<TKey, TValue>> listOfAnotherItems = new List<KeysAndValues<TKey, TValue>>();
+                List<KeyValuePair<TKey, TValue>> listOfThisItems = new List<KeyValuePair<TKey, TValue>>();
+                List<KeyValuePair<TKey, TValue>> listOfAnotherItems = new List<KeyValuePair<TKey, TValue>>();
 
-                foreach (var item in this)
+                foreach (var _item in this)
                 {
-                    listOfThisItems.Add(item);
+                    listOfThisItems.Add(_item);
                 }
 
-                foreach (var item in anotherTable)
+                foreach (var _item in anotherTable)
                 {
-                    listOfAnotherItems.Add(item);
+                    listOfAnotherItems.Add(_item);
                 }
 
-                for (int i = 0; i < listOfAnotherItems.Count; ++i) 
+                for (int i = 0; i < listOfAnotherItems.Count; ++i)
                 {
                     if (listOfThisItems[i].Equals(listOfAnotherItems[i]) == false)
                         return false;
