@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+  <RunConfiguration>
+    <ResultsDirectory>C:\Users\Арам\source\repos\HashTable\Tests\bin\Debug\net8.0\fine-code-coverage\coverage-tool-output</ResultsDirectory>
+    <TestAdaptersPaths>C:\Users\Арам\AppData\Local\FineCodeCoverage\msCodeCoverage\17.9.0\build\netstandard2.0</TestAdaptersPaths>
+    <CollectSourceInformation>False</CollectSourceInformation>
+  </RunConfiguration>
+  <DataCollectionRunSettings>
+    <DataCollectors>
+      <DataCollector friendlyName="Code Coverage" enabled="True">
+        <Configuration>
+          <CodeCoverage>
+            <ModulePaths>
+              <Exclude></Exclude>
+              <Include>
+                <ModulePath>C:\\Users\\Арам\\source\\repos\\HashTable\\Tests\\bin\\Debug\\net8.0\\Tests.dll</ModulePath>
+              </Include>
+            </ModulePaths>
+            <Functions>
+              <Exclude></Exclude>
+              <Include></Include>
+            </Functions>
+            <Attributes>
+              <Exclude></Exclude>
+              <Include></Include>
+            </Attributes>
+            <Sources>
+              <Exclude></Exclude>
+              <Include></Include>
+            </Sources>
+            <CompanyNames>
+              <Exclude></Exclude>
+              <Include></Include>
+            </CompanyNames>
+            <PublicKeyTokens>
+              <Exclude></Exclude>
+              <Include></Include>
+            </PublicKeyTokens>
+            <UseVerifiableInstrumentation>True</UseVerifiableInstrumentation>
+            <AllowLowIntegrityProcesses>True</AllowLowIntegrityProcesses>
+            <CollectFromChildProcesses>True</CollectFromChildProcesses>
+            <CollectAspDotNet>False</CollectAspDotNet>
+          </CodeCoverage>
+          <Format>Cobertura</Format>
+          <FCCGenerated />
+        </Configuration>
+      </DataCollector>
+    </DataCollectors>
+  </DataCollectionRunSettings>
+</RunSettings>

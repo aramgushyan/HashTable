@@ -148,7 +148,7 @@ namespace Tests
         public void TestCopyTo()
         {
             hashTable.Add(new KeyValuePair<int, int>(5, 6));
-            KeysAndValues<int, int>[] array = new KeysAndValues<int, int>[hashTable.Count];
+            KeyValuePair<int, int>[] array = new KeyValuePair<int, int>[hashTable.Count];
             hashTable.CopyTo(array, 0);
             Assert.AreEqual(hashTable.Count, array.Length);
             Assert.AreEqual(5, array[0].Key);
@@ -163,7 +163,7 @@ namespace Tests
         void TestCopy()
         {
             hashTable.Add(new KeyValuePair<int, int>(5, 6));
-            KeysAndValues<int, int>[] array = new KeysAndValues<int, int>[hashTable.Count];
+            KeyValuePair<int, int>[] array = new KeyValuePair<int, int>[hashTable.Count];
             hashTable.CopyTo(array, -1);
         }
 
@@ -184,5 +184,22 @@ namespace Tests
             Assert.AreEqual(2, anotherHashTable.Capacity);
 
         }
+
+        [TestMethod]
+        public void TestKey()
+        {
+            hashTable.Add(new KeyValuePair<int, int>(5, 6));
+            var list = hashTable.Keys;
+            Assert.AreEqual(1, list.Count);
+        }
+
+        [TestMethod]
+        public void TestValue()
+        {
+            hashTable.Add(new KeyValuePair<int, int>(5, 6));
+            var list = hashTable.Values;
+            Assert.AreEqual(1, list.Count);
+        }
+
     }
 }

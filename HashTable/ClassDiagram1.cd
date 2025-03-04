@@ -3,7 +3,7 @@
   <Class Name="HashTable.HashEnumerator&lt;TKey, TValue&gt;" Collapsed="true">
     <Position X="9.5" Y="1.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AQAAAAAAACAABAAAAACgIAAAAAAAAAAAoAAAAAAAgAA=</HashCode>
+      <HashCode>AAAAAAAAACAABAAAAACgAAAAABAAAAAAoAAABAAAgAA=</HashCode>
       <FileName>HashEnumerator.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -11,7 +11,7 @@
   <Class Name="HashTable.NewHashTable&lt;TKey, TValue&gt;" Collapsed="true">
     <Position X="7.5" Y="1.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAICIAAAAAAEABAQiAAEBASCAAAAAAAkAAAAABBQohA=</HashCode>
+      <HashCode>CAICIAAAAAAEAJAQiAAEBAQCAAAAAAAkAACgABBQoBA=</HashCode>
       <FileName>HashTable.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -21,6 +21,13 @@
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAQAgAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
       <FileName>KeysValues.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="HashTable.Node&lt;T&gt;" Collapsed="true">
+    <Position X="11.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Node.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Font Name="Segoe UI" Size="9" />

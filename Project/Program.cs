@@ -171,7 +171,7 @@ namespace HashTableDemo
             Console.WriteLine();
 
             Console.WriteLine("Copy To");
-            KeysAndValues<Place, Region>[] array = new KeysAndValues<Place, Region>[copyClone.Count];
+            KeyValuePair<Place, Region>[] array = new KeyValuePair<Place, Region>[copyClone.Count];
             copyClone.CopyTo(array, 0);
             Console.WriteLine();
 

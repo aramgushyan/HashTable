@@ -7,29 +7,17 @@ namespace HashTable
     public class NewHashTable<TKey, TValue>:IDictionary<TKey, TValue>, ICloneable
     {
 
-        private KeysAndValues<TKey, TValue>[] _storage;
+        private Node<KeysAndValues<TKey,TValue>>[] _storage;
+
         private int _capacity;
 
-
-        public KeysAndValues<TKey, TValue>[] Storage
-        {
-            get
-            {
-                return _storage;
-            }
-        }
+        private int _count;
 
         public int Capacity
         {
             get
             {
                 return _capacity;
-            }
-            set
-            {
-                if (value < 0)
-                    throw new ArgumentOutOfRangeException("Не может быть меньше 0");
-                _capacity = value;
             }
         }
         public int Count 
@@ -76,35 +64,36 @@ namespace HashTable
 
         public NewHashTable()
         {
-            Capacity = 15;
-            _storage = new KeysAndValues<TKey, TValue>[Capacity];
+            _capacity = 15;
+            _storage = new Node<KeysAndValues<TKey, TValue>>[Capacity];
         }
 
         public NewHashTable(int capacity)
         {
-            Capacity = capacity;
-            _storage = new KeysAndValues<TKey, TValue>[Capacity];
+            _capacity=capacity;
+            _storage = new Node<KeysAndValues<TKey, TValue>>[Capacity];
 
         }
 
         public NewHashTable(NewHashTable<TKey, TValue> hashTable)
         {
-            _storage = ((NewHashTable<TKey, TValue>)hashTable.Clone()).Storage;
-            Capacity = hashTable.Capacity;
+            _storage = ((NewHashTable<TKey, TValue>)hashTable.Clone())._storage;
+            _capacity = hashTable.Capacity;
         }
 
         public void Add(TKey key, TValue value)
         {
-            if (IsReadOnly == false)
-            {
+            if (IsReadOnly == true)
+                throw new Exception("Коллекция только для чтения");
 
-                if (!ContainsKey(key))
+            if (!ContainsKey(key))
                 {
                     int hashcodeIndex = IndexStorage(key);
 
                     if (_storage[hashcodeIndex] == null)
                     {
-                        _storage[hashcodeIndex] = new KeysAndValues<TKey, TValue>(key, value);
+                        _storage[hashcodeIndex] = new Node<KeysAndValues<TKey, TValue>>(
+                            new KeysAndValues<TKey, TValue>(key,value));
                     }
                     else
                     {
@@ -112,11 +101,13 @@ namespace HashTable
 
                         while (current.Next != null)
                         {
-                            current = current.Next;
+                            current= current.Next;
                         }
 
-                        current.Next = new KeysAndValues<TKey, TValue>(key, value);
-                    }
+                        current.Next = new Node<KeysAndValues<TKey, TValue>>(
+                            new KeysAndValues<TKey, TValue>(key, value));
+
+                }
                     if (LenghtNodes(hashcodeIndex) >= _capacity)
                     {
                         UpdateRange();
@@ -126,34 +117,30 @@ namespace HashTable
                 {
                     throw new Exception("Такой ключ есть");
                 }
-            }
-            else
-            {
-                throw new Exception("Коллекция только для чтения");
-            }
         }
-        private int LenghtNodes(int index) 
+        private int LenghtNodes(int index)
         {
             var current = _storage[index];
             int count = 0;
-            while (current != null) 
+            while (current != null)
             {
                 ++count;
                 current = current.Next;
-            }  
+            }
             return count;
         }
+
         public bool Remove(TKey key)
         {
             if (IsReadOnly == false)
             {
                 int index = IndexStorage(key);
                 var current = _storage[index];
-                KeysAndValues<TKey, TValue> past = null;
+                Node<KeysAndValues<TKey, TValue>> past = null;
 
                 while (current != null) 
                 {
-                    if (current.Key.Equals(key)) 
+                    if (current.Item.Key.Equals(key)) 
                     {
                         if (past == null)
                             _storage[index] = current.Next;
@@ -183,11 +170,11 @@ namespace HashTable
                 var current = _storage[index];
                 while (current !=null) 
                 {
-                    if (current.Key.Equals(key)) 
+                    if (current.Item.Key.Equals(key)) 
                     {
                         return true;
                     }
-                    current = current.Next; 
+                    current= current.Next; 
                 }
             }
             return false;
@@ -238,11 +225,11 @@ namespace HashTable
             var current = _storage[IndexStorage(key)];
             while (current != null)
             {
-                if (current.Key.Equals(key))
+                if (current.Item.Key.Equals(key))
                 {
-                    current.Value = value;
+                    current.Item.Value = value;
                 }
-                current = current.Next;
+                current= current.Next;
             }
         }
 
@@ -252,9 +239,9 @@ namespace HashTable
             var current = _storage[IndexStorage(key)];
             while (current != null) 
             {
-                if (current.Key.Equals(key))
+                if (current.Item.Key.Equals(key))
                 {
-                    return current.Value;
+                    return current.Item.Value;
                 }
                 current = current.Next;
             }
@@ -278,7 +265,7 @@ namespace HashTable
 
         public void Clear()
         {
-            _storage = new KeysAndValues<TKey, TValue>[_capacity];
+            _storage = new Node<KeysAndValues<TKey, TValue>>[_capacity];
         }
 
         public bool Contains(KeyValuePair<TKey, TValue> item)
@@ -288,7 +275,14 @@ namespace HashTable
 
         public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
         {
-            throw new NotImplementedException();
+            if (arrayIndex < 0 || arrayIndex + Count > array.Length)
+                throw new Exception("Недостаточно места в массиве");
+
+            foreach (var _item in this)
+            {
+                array[arrayIndex] = new KeyValuePair<TKey, TValue>(_item.Key, _item.Value);
+                ++arrayIndex;
+            }
         }
 
         public bool Remove(KeyValuePair<TKey, TValue> item)
@@ -301,18 +295,6 @@ namespace HashTable
             return new HashEnumerator<TKey, TValue>(_storage);
         }
 
-        public void CopyTo(KeysAndValues<TKey, TValue>[] array, int arrayIndex)//?????????????
-        {
-            if (arrayIndex < 0 || arrayIndex + Count > array.Length)
-                throw new Exception("Недостаточно места в массиве");
-
-            foreach (var _item in this)
-            {
-                array[arrayIndex] = new KeysAndValues<TKey, TValue>(_item.Key, _item.Value);
-                ++arrayIndex;
-            }
-        }
-
         public object Clone()
         {
             NewHashTable<TKey, TValue> clone = new NewHashTable<TKey, TValue>(_capacity);
@@ -320,7 +302,7 @@ namespace HashTable
             {
                 clone.Add(_item.Key, _item.Value);
             }
-            clone.Capacity = _capacity;
+            clone._capacity = _capacity;
             return clone;
         }
 
@@ -332,13 +314,15 @@ namespace HashTable
         private void UpdateRange()
         {
             _capacity *= 2;
-            var newStorage = new KeysAndValues<TKey, TValue>[_capacity];
+            var newStorage = new Node<KeysAndValues<TKey, TValue>>[_capacity];
             foreach (var _item in this)
             {
                 int index = IndexStorage(_item.Key);
                 if (newStorage[index] == null)
                 {
-                    newStorage[index] = new KeysAndValues<TKey, TValue>(_item.Key, _item.Value);
+                    newStorage[index] = new Node<KeysAndValues<TKey, TValue>>(
+                        new KeysAndValues<TKey,TValue>(_item.Key, _item.Value)
+                        );
                 }
                 else
                 {
@@ -347,7 +331,7 @@ namespace HashTable
                     {
                         current=current.Next;
                     }
-                    current.Next = new KeysAndValues<TKey, TValue>(_item.Key, _item.Value);
+                    current.Next.Item = new KeysAndValues<TKey, TValue>(_item.Key, _item.Value);
                 }   
             }
             _storage = newStorage;
@@ -385,3 +369,4 @@ namespace HashTable
 
     }
 }
+

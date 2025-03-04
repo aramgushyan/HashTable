@@ -1,26 +1,21 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections;
 
 namespace HashTable
 {
-    public class HashEnumerator <TKey,TValue> : IEnumerator<KeyValuePair<TKey, TValue>>
+    public class HashEnumerator<TKey, TValue> : IEnumerator<KeyValuePair<TKey, TValue>>
     {
-        private KeysAndValues<TKey, TValue> _item;
-        private KeysAndValues<TKey, TValue>[] _storage;
-        private KeysAndValues<TKey, TValue> _current;
-        private int _index=0;
-        public HashEnumerator(KeysAndValues<TKey, TValue>[] storage) 
+        private Node<KeysAndValues<TKey, TValue>> _item;
+        private Node<KeysAndValues<TKey, TValue>>[] _storage;
+        private Node<KeysAndValues<TKey, TValue>> _current;
+        private int _index = 0;
+        public HashEnumerator(Node<KeysAndValues<TKey, TValue>>[] storage)
         {
             _storage = storage;
         }
 
         object IEnumerator.Current => Current;
 
-       public  KeyValuePair<TKey, TValue> Current => new KeyValuePair<TKey, TValue>(_item.Key,_item.Value);
+        public KeyValuePair<TKey, TValue> Current => new KeyValuePair<TKey, TValue>(_item.Item.Key, _item.Item.Value);
 
         public void Dispose()
         {
@@ -28,9 +23,9 @@ namespace HashTable
 
         public bool MoveNext()
         {
-            while (_index != _storage.Length) 
+            while (_index != _storage.Length)
             {
-                if (_storage[_index] == null && _index != _storage.Length) 
+                if (_storage[_index] == null && _index != _storage.Length)
                 {
                     ++_index;
                     _item = null;
@@ -44,7 +39,7 @@ namespace HashTable
                     while (_current != null)
                     {
                         _item = _current;
-                        _current = _current.Next;
+                        _current= _current.Next;
                         return true;
                     }
                     ++_index;
