@@ -7,7 +7,7 @@ namespace Tests
     [TestClass]
     public sealed class Test
     {
-        private NewHashTable<int, int> hashTable = new NewHashTable<int, int>(5);
+        private NewHashTable<int, int> hashTable = new NewHashTable<int, int>(2);
         [TestMethod]
 
         public void TestAdd()
@@ -86,6 +86,7 @@ namespace Tests
         public void TestAnotherAdd()
         {
             hashTable.Add(new KeyValuePair<int, int>(5, 6));
+            hashTable.Add(new KeyValuePair<int, int>(3, 6));
             Assert.AreEqual(true, hashTable.ContainsKey(5));
             Assert.AreEqual(true, hashTable.ContainsValue(6));
             Assert.AreEqual(true, hashTable.Contains(new KeyValuePair<int, int>(5, 6)));
@@ -111,7 +112,7 @@ namespace Tests
         public void TestCapacity()
         {
             hashTable.Add(new KeyValuePair<int, int>(5, 6));
-            Assert.AreEqual(5, hashTable.Capacity);
+            Assert.AreEqual(2, hashTable.Capacity);
         }
 
         [TestMethod]
@@ -199,6 +200,14 @@ namespace Tests
             hashTable.Add(new KeyValuePair<int, int>(5, 6));
             var list = hashTable.Values;
             Assert.AreEqual(1, list.Count);
+        }
+
+        [TestMethod]
+        public void TestTryGetValue()
+        {
+            hashTable.Add(new KeyValuePair<int, int>(5, 6));
+            var item = hashTable.TryGetValue(5, out var value);
+            Assert.AreEqual(true,item);
         }
 
     }

@@ -13,6 +13,7 @@
             <ModulePaths>
               <Exclude></Exclude>
               <Include>
+                <ModulePath>.*\\HashTable\.dll$</ModulePath>
                 <ModulePath>C:\\Users\\Арам\\source\\repos\\HashTable\\Tests\\bin\\Debug\\net8.0\\Tests.dll</ModulePath>
               </Include>
             </ModulePaths>
